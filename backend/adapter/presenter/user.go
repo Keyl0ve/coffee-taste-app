@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Keyl0ve/coffee-taste-app/entity"
-	"github.com/Keyl0ve/coffee-taste-app/usecase/port"
+	"github.com/Keyl0ve/coffee-taste-app/backend/entity"
+	"github.com/Keyl0ve/coffee-taste-app/backend/usecase/port"
 )
 
 type User struct {

@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 
-	handler "github.com/Keyl0ve/coffee-taste-app/server/interface"
+	handler "github.com/Keyl0ve/coffee-taste-app/backend/interface"
 	"github.com/go-sql-driver/mysql"
 )
 
