@@ -18,11 +18,21 @@ CREATE TABLE
             PRIMARY KEY (`coffee_id`),
 ) COMMENT = 'コーヒー';
 
-CREATE TABLE
-    `user_coffee` (
-            `user_id` VARCHAR(100) NOT NULL,
-            `coffee_id` VARCHAR(100) NOT NULL,
-            PRIMARY KEY (`user_id`, `coffee_id`),
-            FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-            FOREIGN KEY (`coffee_id`) REFERENCES `coffee` (`coffee_id`)
-) COMMENT = 'ユーザーとコーヒーを結ぶ中間テーブル';
+# testUser1, testUser2, testUser3 の 3 ユーザーを作成
+
+INSERT INTO `user`(user_id, user_name ,password, coffee_table_id)
+VALUES ('UserID_testUser1_12345', 'testUser1', 'password', 'UserID_testUser1_12345');
+
+INSERT INTO `user`(user_id, user_name ,password)
+VALUES ('UserID_testUser2_24567', 'testUser2', 'password', 'UserID_testUser2_24567');
+
+INSERT INTO `user`(user_id, user_name ,password)
+VALUES ('UserID_testUser3_35635', 'testUser3', 'password', 'UserID_testUser3_35635');
+
+# testCoffee1, testCoffee2 の 2 つのコーヒーを作成
+
+INSERT INTO `coffee`(coffee_id, coffee_name, roast_value, detail, process)
+VALUES ('CoffeeID_testCoffee1_12345', 'Ethiopia', 'Light', 'エチオピアのコーヒーです。', 'Washed');
+
+INSERT INTO `coffee`(coffee_id, coffee_name, roasted_value, detail, process)
+VALUES ('CoffeeID_testCoffee2_12645', 'Guatemala', 'Medium', 'グアテマラのコーヒーです。', 'Washed');
