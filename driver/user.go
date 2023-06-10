@@ -8,10 +8,10 @@ import (
 	"os"
 
 	// blank import for MySQL driver
-	"github.com/Keyl0ve/coffee-taste-app//adapter/controller"
-	"github.com/Keyl0ve/coffee-taste-app//adapter/gateway"
-	"github.com/Keyl0ve/coffee-taste-app//adapter/presenter"
-	"github.com/Keyl0ve/coffee-taste-app//usecase/interactor"
+	"github.com/Keyl0ve/coffee-taste-app/adapter/controller"
+	"github.com/Keyl0ve/coffee-taste-app/adapter/gateway"
+	"github.com/Keyl0ve/coffee-taste-app/adapter/presenter"
+	"github.com/Keyl0ve/coffee-taste-app/usecase/interactor"
 	_ "github.com/go-sql-driver/mysql"
 )
 

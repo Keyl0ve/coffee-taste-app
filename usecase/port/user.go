@@ -3,7 +3,7 @@ package port
 import (
 	"context"
 
-	"github.com/Keyl0ve/coffee-taste-app//entity"
+	"github.com/Keyl0ve/coffee-taste-app/entity"
 )
 
 type UserInputPort interface {
