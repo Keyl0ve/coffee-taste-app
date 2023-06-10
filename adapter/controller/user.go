@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Keyl0ve/coffee-taste-app/backend/usecase/port"
+	"github.com/Keyl0ve/coffee-taste-app//usecase/port"
 )
 
 type User struct {

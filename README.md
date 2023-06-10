@@ -1,2 +1,2 @@
-# coffee-taste-app/backend
+# coffee-taste-app/
 coffeeeeeee

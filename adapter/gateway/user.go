@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Keyl0ve/coffee-taste-app/backend/entity"
-	"github.com/Keyl0ve/coffee-taste-app/backend/usecase/port"
+	"github.com/Keyl0ve/coffee-taste-app//entity"
+	"github.com/Keyl0ve/coffee-taste-app//usecase/port"
 )
 
 type UserRepository struct {
