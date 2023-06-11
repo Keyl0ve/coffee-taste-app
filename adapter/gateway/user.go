@@ -26,7 +26,9 @@ func NewUserRepository(conn *sql.DB) port.UserRepository {
 func (u *UserRepository) GetUserByID(ctx context.Context, userID string) (*entity.User, error) {
 	conn := u.GetDBConn()
 	row := conn.QueryRowContext(ctx, "SELECT * FROM `user` WHERE id=?", userID)
+	log.Println(row)
 	user := entity.User{}
+	log.Println(user)
 	err := row.Scan(&user.ID, &user.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
