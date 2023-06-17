@@ -1,16 +1,24 @@
 # coffee-taste-app
 
-How to start
+## How to start
 - docker-compose up -d
-- go run main.go
 
-How to down
+## How to see DB
+- mysql -h dockerMySQL -u admin -p app
+- show databases;
+- show tables from app;
+
+- localhost:4000
+
+
+
+## How to down
 - docker-compose down
 
-Example request
+## Example request
 - curl  http://localhost:8080/user/1
 
-Example response
+## Example response
 - name1
 
-front: https://github.com/Keyl0ve/coffee-taste-app-front
+## front: https://github.com/Keyl0ve/coffee-taste-app-front
