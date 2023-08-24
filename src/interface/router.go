@@ -29,32 +29,6 @@ func (s *ServiceDriver) Server(ctx context.Context) {
 				s.CoffeeCreate(ctx, w, r)
 			})
 		})
-
-		r.Route("/user", func(r chi.Router) {
-			r.Get("/get", func(w http.ResponseWriter, r *http.Request) {
-				s.UserGet(ctx, w, r)
-			})
-		})
-
-		r.Route("/join", func(r chi.Router) {
-			r.Get("/delete", func(w http.ResponseWriter, r *http.Request) {
-				s.JoinDelete(ctx, w, r)
-			})
-
-			r.Get("/create", func(w http.ResponseWriter, r *http.Request) {
-				s.JoinCreate(ctx, w, r)
-			})
-
-			r.Route("/get", func(r chi.Router) {
-				r.Get("/user", func(w http.ResponseWriter, r *http.Request) {
-					s.JoinGetUser(ctx, w, r)
-				})
-
-				r.Get("/coffee", func(w http.ResponseWriter, r *http.Request) {
-					s.JoinGetCoffee(ctx, w, r)
-				})
-			})
-		})
 	})
 
 	addr := os.Getenv("Addr")
