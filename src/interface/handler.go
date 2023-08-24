@@ -41,7 +41,7 @@ func (s *ServiceDriver) UserGet(ctx context.Context, w http.ResponseWriter, r *h
 	}
 }
 
-// curl -H 'userName:kyo' -H 'password:password' http://localhost:8080/api/user/create
+// curl -X POST -H 'userName: kyo' -H 'password: password' http://localhost:8080/api/user/create
 func (s *ServiceDriver) UserCreate(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	userName := r.Header.Get("userName")

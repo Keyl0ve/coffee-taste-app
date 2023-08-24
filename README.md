@@ -17,6 +17,7 @@
 
 ## Example request
 - curl http://localhost:8080/api/coffee/get
+- curl -X POST -H 'userName: kyo' -H 'password: password' http://localhost:8080/api/user/create
 
 ## Example response
 - name1
