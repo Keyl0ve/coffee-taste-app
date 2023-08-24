@@ -8,79 +8,79 @@ import (
 	domain "github.com/Keyl0ve/coffee-taste-app/src/domain/model"
 )
 
-type JoinChannelToUserRepository struct {
+type JoinCoffeeToUserRepository struct {
 	Conn *sql.DB
 }
 
-func NewJoinChannelToUserRepository(conn *sql.DB) *JoinChannelToUserRepository {
-	return &JoinChannelToUserRepository{Conn: conn}
+func NewJoinCoffeeToUserRepository(conn *sql.DB) *JoinCoffeeToUserRepository {
+	return &JoinCoffeeToUserRepository{Conn: conn}
 }
 
-func ScanJoinChannelToUsers(rows *sql.Rows) ([]domain.JoinChannelToUser, int, error) {
-	joinChannelToUsers := make([]domain.JoinChannelToUser, 0)
+func ScanJoinCoffeeToUsers(rows *sql.Rows) ([]domain.JoinCoffeeToUser, int, error) {
+	joinCoffeeToUsers := make([]domain.JoinCoffeeToUser, 0)
 
 	for rows.Next() {
-		var v domain.JoinChannelToUser
-		if err := rows.Scan(&v.UserID, &v.UserName, &v.ChannelID, &v.ChannelName, &v.CreatedAt, &v.UpdatedAt); err != nil {
-			log.Printf("[ERROR] scan ScanJoinChannelToUsers: %+v", err)
+		var v domain.JoinCoffeeToUser
+		if err := rows.Scan(&v.UserID, &v.UserName, &v.CoffeeID, &v.CoffeeName); err != nil {
+			log.Printf("[ERROR] scan ScanJoinCoffeeToUsers: %+v", err)
 			return nil, 0, err
 		}
-		joinChannelToUsers = append(joinChannelToUsers, v)
+		joinCoffeeToUsers = append(joinCoffeeToUsers, v)
 	}
 
-	return joinChannelToUsers, len(joinChannelToUsers), nil
+	return joinCoffeeToUsers, len(joinCoffeeToUsers), nil
 }
 
-func (j JoinChannelToUserRepository) GetJoinByUserID(ctx context.Context, userID domain.UserID) ([]domain.JoinChannelToUser, error) {
-	query := "SELECT * FROM joinChannelToUser WHERE user_id = ?"
+func (j JoinCoffeeToUserRepository) GetJoinByUserID(ctx context.Context, userID domain.UserID) ([]domain.JoinCoffeeToUser, error) {
+	query := "SELECT * FROM joinCoffeeToUser WHERE user_id = ?"
 	rows, err := j.Conn.QueryContext(ctx, query, userID)
 	if err != nil {
-		log.Printf("[ERROR] can't get GetChannelIDsByUserID: %+v", err)
+		log.Printf("[ERROR] can't get GetCoffeeIDsByUserID: %+v", err)
 		return nil, err
 	}
 
-	joinChannelToUsers, _, err := ScanJoinChannelToUsers(rows)
+	joinCoffeeToUsers, _, err := ScanJoinCoffeeToUsers(rows)
 	if err != nil {
-		log.Printf("[ERROR] can not scan Channels: %+v", err)
+		log.Printf("[ERROR] can not scan Coffees: %+v", err)
 		return nil, err
 	}
 
-	return joinChannelToUsers, nil
+	return joinCoffeeToUsers, nil
 }
 
-func (j JoinChannelToUserRepository) GetJoinByChannelID(ctx context.Context, channelID domain.ChannelID) ([]domain.JoinChannelToUser, error) {
-	query := "SELECT * FROM joinChannelToUser WHERE channel_id = ?"
-	rows, err := j.Conn.QueryContext(ctx, query, channelID)
+func (j JoinCoffeeToUserRepository) GetJoinByCoffeeID(ctx context.Context, coffeeID domain.CoffeeID) ([]domain.JoinCoffeeToUser, error) {
+	query := "SELECT * FROM joinCoffeeToUser WHERE coffee_id = ?"
+	rows, err := j.Conn.QueryContext(ctx, query, coffeeID)
 	if err != nil {
-		log.Printf("[ERROR] can't get GetUserIDsByChannelID: %+v", err)
+		log.Printf("[ERROR] can't get GetUserIDsByCoffeeID: %+v", err)
 		return nil, err
 	}
 
-	joinChannelToUsers, _, err := ScanJoinChannelToUsers(rows)
+	joinCoffeeToUsers, _, err := ScanJoinCoffeeToUsers(rows)
 	if err != nil {
-		log.Printf("[ERROR] can not scan Channels: %+v", err)
+		log.Printf("[ERROR] can not scan Coffees: %+v", err)
 		return nil, err
 	}
 
-	return joinChannelToUsers, nil
+	return joinCoffeeToUsers, nil
 }
 
-func (j JoinChannelToUserRepository) CreateConnectionUserIDToChannelID(ctx context.Context, join *domain.JoinChannelToUser) error {
-	query := "INSERT INTO joinChannelToUser (user_ID, user_name, channel_ID, channel_name, created_at, updated_at) VALUES (?,?,?,?,?,?) "
-	_, err := j.Conn.ExecContext(ctx, query, join.UserID, join.UserName, join.ChannelID, join.ChannelName, join.CreatedAt, join.UpdatedAt)
+func (j JoinCoffeeToUserRepository) CreateConnectionUserIDToCoffeeID(ctx context.Context, join *domain.JoinCoffeeToUser) error {
+	query := "INSERT INTO joinCoffeeToUser (user_ID, user_name, coffee_ID, coffee_name, created_at, updated_at) VALUES (?,?,?,?) "
+	_, err := j.Conn.ExecContext(ctx, query, join.UserID, join.UserName, join.CoffeeID, join.CoffeeName)
 	if err != nil {
-		log.Printf("[ERROR] can't create CreateConnectionUserIDToChannelID: %+v", err)
+		log.Printf("[ERROR] can't create CreateConnectionUserIDToCoffeeID: %+v", err)
 		return nil
 	}
 
 	return nil
 }
 
-func (j JoinChannelToUserRepository) DeleteConnectionUserIDToChannelID(ctx context.Context, userid domain.UserID, channelID domain.ChannelID) error {
-	query := "DELETE FROM joinChannelToUser WHERE user_id = ? AND channel_id = ?"
-	_, err := j.Conn.ExecContext(ctx, query, userid, channelID)
+func (j JoinCoffeeToUserRepository) DeleteConnectionUserIDToCoffeeID(ctx context.Context, userid domain.UserID, coffeeID domain.CoffeeID) error {
+	query := "DELETE FROM joinCoffeeToUser WHERE user_id = ? AND coffee_id = ?"
+	_, err := j.Conn.ExecContext(ctx, query, userid, coffeeID)
 	if err != nil {
-		log.Printf("[ERROR] can't delete DeleteConnectionUserIDToChannelID: %+v", err)
+		log.Printf("[ERROR] can't delete DeleteConnectionUserIDToCoffeeID: %+v", err)
 		return nil
 	}
 

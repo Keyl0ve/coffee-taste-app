@@ -1,5 +1,5 @@
 dup:
-	docker-compose up
+	docker-compose up -d
 
 dbuild:
 	docker-compose up -d --build

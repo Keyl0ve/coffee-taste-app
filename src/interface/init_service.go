@@ -9,11 +9,10 @@ import (
 
 func InitService(conn *sql.DB) Service {
 	userRepo := infra.NewUserRepository(conn)
-	channelRepo := infra.NewChannelRepository(conn)
-	messageRepo := infra.NewMessageRepository(conn)
-	joinRepo := infra.NewJoinChannelToUserRepository(conn)
+	coffeeRepo := infra.NewCoffeeRepository(conn)
+	joinRepo := infra.NewJoinCoffeeToUserRepository(conn)
 
-	usecaseInterface := usecase.NewChatToolUsecase(userRepo, channelRepo, messageRepo, joinRepo)
+	usecaseInterface := usecase.NewChatToolUsecase(userRepo, coffeeRepo, joinRepo)
 	service := NewServiceDriver(usecaseInterface)
 	return service
 }

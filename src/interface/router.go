@@ -8,7 +8,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/render"
 )
 
 type Service interface {
@@ -20,33 +19,14 @@ func (s *ServiceDriver) Server(ctx context.Context) {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	r.Get("/debug", func(w http.ResponseWriter, r *http.Request) {
-		data := map[string]string{
-			"message": "hello",
-		}
-		render.JSON(w, r, data)
-	})
-
 	r.Route("/api", func(r chi.Router) {
-		r.Route("/message", func(r chi.Router) {
-			r.Route("/get", func(r chi.Router) {
-				r.Get("/send", func(w http.ResponseWriter, r *http.Request) {
-					s.MessageGetSend(ctx, w, r)
-				})
-
-				r.Get("/notsend", func(w http.ResponseWriter, r *http.Request) {
-					s.MessageGetNotSend(ctx, w, r)
-				})
-			})
-		})
-
-		r.Route("/channel", func(r chi.Router) {
+		r.Route("/coffee", func(r chi.Router) {
 			r.Get("/get", func(w http.ResponseWriter, r *http.Request) {
-				s.ChannelGet(ctx, w, r)
+				s.CoffeeGet(ctx, w, r)
 			})
 
 			r.Get("/create", func(w http.ResponseWriter, r *http.Request) {
-				s.ChannelCreate(ctx, w, r)
+				s.CoffeeCreate(ctx, w, r)
 			})
 		})
 
@@ -70,8 +50,8 @@ func (s *ServiceDriver) Server(ctx context.Context) {
 					s.JoinGetUser(ctx, w, r)
 				})
 
-				r.Get("/channel", func(w http.ResponseWriter, r *http.Request) {
-					s.JoinGetChannel(ctx, w, r)
+				r.Get("/coffee", func(w http.ResponseWriter, r *http.Request) {
+					s.JoinGetCoffee(ctx, w, r)
 				})
 			})
 		})

@@ -22,26 +22,18 @@ func NewServiceDriver(controller *usecase.ChatToolUsecase) *ServiceDriver {
 	}
 }
 
-// curl -H 'channelID:ChannelID_testChannel1_12345' http://localhost:8080/api/message/get/send
-func (s *ServiceDriver) MessageGetSend(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	// channelID を header から取得
-	channelID := r.Header.Get("channelID")
-
-	// channelID が空文字だったらエラーを返す
-	if channelID == "" {
-		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", "header の情報が不足しています。"))
-	}
-
-	messages, err := s.Controller.GetMessageByIsSend(ctx, domain.ChannelID(channelID))
+// curl http://localhost:8080/api/coffee/get
+func (s *ServiceDriver) CoffeeGet(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	coffees, err := s.Controller.GetCoffees(ctx)
 	if err != nil {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
 
 	// レスポンスを返す
 	res := struct {
-		Messages []domain.Message `json:"messages"`
+		Coffees []domain.Coffee `json:"coffees"`
 	}{
-		Messages: messages,
+		Coffees: coffees,
 	}
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		log.Printf("[ERROR] response encoding failed: %+v", err)
@@ -49,60 +41,13 @@ func (s *ServiceDriver) MessageGetSend(ctx context.Context, w http.ResponseWrite
 	}
 }
 
-// curl -H 'channelID:ChannelID_testChannel1_12345' -H 'userID:UserID_testUser1_12345' http://localhost:8080/api/message/get/notsend
-func (s *ServiceDriver) MessageGetNotSend(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	// channelID, UserID を header から取得
-	channelID := r.Header.Get("channelID")
-	userID := r.Header.Get("userID")
-
-	// channelID, channelID が空文字だったらエラーを返す
-	if channelID == "" || userID == "" {
-		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", "header の情報が不足しています。"))
-	}
-
-	messages, err := s.Controller.GetMessageByNotIsSend(ctx, domain.ChannelID(channelID), domain.UserID(userID))
-	if err != nil {
-		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
-	}
-
-	// レスポンスを返す
-	res := struct {
-		Messages []domain.Message `json:"messages"`
-	}{
-		Messages: messages,
-	}
-	if err := json.NewEncoder(w).Encode(&res); err != nil {
-		log.Printf("[ERROR] response encoding failed: %+v", err)
-		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%w", err))
-	}
-}
-
-// curl http://localhost:8080/api/channel/get
-func (s *ServiceDriver) ChannelGet(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	channels, err := s.Controller.GetChannels(ctx)
-	if err != nil {
-		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
-	}
-
-	// レスポンスを返す
-	res := struct {
-		Channels []domain.Channel `json:"channels"`
-	}{
-		Channels: channels,
-	}
-	if err := json.NewEncoder(w).Encode(&res); err != nil {
-		log.Printf("[ERROR] response encoding failed: %+v", err)
-		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%w", err))
-	}
-}
-
-// curl -H 'channelName:general' http://localhost:8080/api/channel/create
-func (s *ServiceDriver) ChannelCreate(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+// curl -H 'coffeeName:general' http://localhost:8080/api/coffee/create
+func (s *ServiceDriver) CoffeeCreate(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
-	channelName := r.Header.Get("channelName")
-	channel := domain.NewChannel(channelName, now)
+	coffeeName := r.Header.Get("coffeeName")
+	coffee := domain.NewCoffee(coffeeName, now)
 
-	err := s.Controller.CreateChannel(ctx, channel)
+	err := s.Controller.CreateCoffee(ctx, coffee)
 	if err != nil {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
@@ -139,13 +84,13 @@ func (s *ServiceDriver) UserGet(ctx context.Context, w http.ResponseWriter, r *h
 	}
 }
 
-// curl -H 'channelID:ChannelID_testChannel1_12345' -H 'userID:UserID_testUser1_12345' http://localhost:8080/api/join/delete
+// curl -H 'coffeeID:CoffeeID_testCoffee1_12345' -H 'userID:UserID_testUser1_12345' http://localhost:8080/api/join/delete
 func (s *ServiceDriver) JoinDelete(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("userID")
-	channelID := r.Header.Get("channelID")
+	coffeeID := r.Header.Get("coffeeID")
 
 	// TODO: 既に脱退している場合、エラーを返す
-	err := s.Controller.DeleteChannelByUserIDAndChannelID(ctx, domain.UserID(userID), domain.ChannelID(channelID))
+	err := s.Controller.DeleteCoffeeByUserIDAndCoffeeID(ctx, domain.UserID(userID), domain.CoffeeID(coffeeID))
 	if err != nil {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
@@ -162,11 +107,10 @@ func (s *ServiceDriver) JoinDelete(ctx context.Context, w http.ResponseWriter, r
 	}
 }
 
-// curl -H 'channelID:ChannelID_testChannel1_12345' -H 'userID:UserID_testUser1_12345' http://localhost:8080/api/join/create
+// curl -H 'coffeeID:CoffeeID_testCoffee1_12345' -H 'userID:UserID_testUser1_12345' http://localhost:8080/api/join/create
 func (s *ServiceDriver) JoinCreate(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("userID")
-	channelID := r.Header.Get("channelID")
-	now := time.Now()
+	coffeeID := r.Header.Get("coffeeID")
 
 	// userID から User 情報を取得
 	user, err := s.Controller.GetUserByUserID(ctx, domain.UserID(userID))
@@ -174,20 +118,20 @@ func (s *ServiceDriver) JoinCreate(ctx context.Context, w http.ResponseWriter, r
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
 
-	// channelID から Channel 情報を取得
-	channel, err := s.Controller.GetChannelByChannelID(ctx, domain.ChannelID(channelID))
+	// coffeeID から Coffee 情報を取得
+	coffee, err := s.Controller.GetCoffeeByCoffeeID(ctx, domain.CoffeeID(coffeeID))
 	if err != nil {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
 
-	if userID == "" || user.UserName == "" || channelID == "" || channel.ChannelName == "" {
+	if userID == "" || user.UserName == "" || coffeeID == "" || coffee.CoffeeName == "" {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("ユーザー、もしくはチャンネルが不正です。"))
 	}
 
-	join := domain.NewJoinChannelToUser(domain.UserID(userID), user.UserName, domain.ChannelID(channelID), channel.ChannelName, now, now)
+	join := domain.NewJoinCoffeeToUser(domain.UserID(userID), user.UserName, domain.CoffeeID(coffeeID), coffee.CoffeeName)
 
 	// TODO: 既に参加している場合、エラーを返す
-	err = s.Controller.CreateChannelConnection(ctx, join)
+	err = s.Controller.CreateCoffeeConnection(ctx, join)
 	if err != nil {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
@@ -204,23 +148,23 @@ func (s *ServiceDriver) JoinCreate(ctx context.Context, w http.ResponseWriter, r
 	}
 }
 
-// curl -H 'channelID:ChannelID_testChannel1_12345' http://localhost:8080/api/join/get/user
+// curl -H 'coffeeID:CoffeeID_testCoffee1_12345' http://localhost:8080/api/join/get/user
 func (s *ServiceDriver) JoinGetUser(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	channelID := r.Header.Get("channelID")
-	if channelID == "" {
+	coffeeID := r.Header.Get("coffeeID")
+	if coffeeID == "" {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", "header の情報が不足しています。"))
 	}
 
-	joinChannelToUsers, err := s.Controller.GetUserByChannelID(ctx, domain.ChannelID(channelID))
+	joinCoffeeToUsers, err := s.Controller.GetUserByCoffeeID(ctx, domain.CoffeeID(coffeeID))
 	if err != nil {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
 
 	// レスポンスを返す
 	res := struct {
-		Join []domain.JoinChannelToUser `json:"join"`
+		Join []domain.JoinCoffeeToUser `json:"join"`
 	}{
-		Join: joinChannelToUsers,
+		Join: joinCoffeeToUsers,
 	}
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		log.Printf("[ERROR] response encoding failed: %+v", err)
@@ -228,8 +172,8 @@ func (s *ServiceDriver) JoinGetUser(ctx context.Context, w http.ResponseWriter, 
 	}
 }
 
-// curl -H 'userID:UserID_testUser1_12345' http://localhost:8080/api/join/get/channel
-func (s *ServiceDriver) JoinGetChannel(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+// curl -H 'userID:UserID_testUser1_12345' http://localhost:8080/api/join/get/coffee
+func (s *ServiceDriver) JoinGetCoffee(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	// UserID を header から取得
 	userID := r.Header.Get("userID")
 
@@ -238,16 +182,16 @@ func (s *ServiceDriver) JoinGetChannel(ctx context.Context, w http.ResponseWrite
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", "header の情報が不足しています。"))
 	}
 
-	joinChannelToUsers, err := s.Controller.GetChannelByUserID(ctx, domain.UserID(userID))
+	joinCoffeeToUsers, err := s.Controller.GetCoffeeByUserID(ctx, domain.UserID(userID))
 	if err != nil {
 		domain.WriteErrorResponse(w, 500, fmt.Sprintf("%v", err))
 	}
 
 	// レスポンスを返す
 	res := struct {
-		Join []domain.JoinChannelToUser `json:"join"`
+		Join []domain.JoinCoffeeToUser `json:"join"`
 	}{
-		Join: joinChannelToUsers,
+		Join: joinCoffeeToUsers,
 	}
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		log.Printf("[ERROR] response encoding failed: %+v", err)

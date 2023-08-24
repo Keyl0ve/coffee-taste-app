@@ -16,7 +16,7 @@
 - docker-compose down
 
 ## Example request
-- curl  http://localhost:8080/user/1
+- curl http://localhost:8080/api/coffee/get
 
 ## Example response
 - name1
