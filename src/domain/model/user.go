@@ -21,3 +21,13 @@ type User struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func NewUser(name, password string, now time.Time) *User {
+	return &User{
+		UserID:    NewUserID(name),
+		UserName:  name,
+		Password:  password,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+}

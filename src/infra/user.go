@@ -27,44 +27,24 @@ func (u UserRepository) CreateUser(ctx context.Context, user *domain.User) error
 
 	return nil
 }
-
-func (u UserRepository) GetUser(ctx context.Context, userID domain.UserID) (domain.User, error) {
-	query := "SELECT * FROM user WHERE user_id = ?"
-	rows, err := u.Conn.QueryContext(ctx, query, userID)
+func (u UserRepository) GetUsers(ctx context.Context) ([]domain.User, error) {
+	query := "SELECT * FROM user"
+	rows, err := u.Conn.QueryContext(ctx, query)
 	if err != nil {
-		log.Printf("[ERROR] can't get User: %+v", err)
-		return domain.User{}, err
+		log.Printf("[ERROR] can't get Users: %+v", err)
+		return []domain.User{}, err
 	}
+	defer rows.Close()
 
-	var user domain.User
+	var users []domain.User
 	for rows.Next() {
+		var user domain.User
 		if err := rows.Scan(&user.UserID, &user.UserName, &user.Password, &user.CreatedAt, &user.UpdatedAt); err != nil {
 			log.Printf("[ERROR] scan ScanUser: %+v", err)
-			return domain.User{}, err
+			return []domain.User{}, err
 		}
+		users = append(users, user)
 	}
 
-	return user, nil
-}
-
-func (u UserRepository) UpdateUser(ctx context.Context, userID string, updatedUser *domain.User) error {
-	query := "UPDATE user set user_name = ? WHERE user_id = ? "
-	_, err := u.Conn.ExecContext(ctx, query, updatedUser, userID)
-	if err != nil {
-		log.Printf("[ERROR] can't UpdateUser: %+v", err)
-		return nil
-	}
-
-	return nil
-}
-
-func (u UserRepository) DeleteUser(ctx context.Context, userID domain.UserID) error {
-	query := "DELETE FROM user WHERE user_id = ?"
-	_, err := u.Conn.ExecContext(ctx, query, userID)
-	if err != nil {
-		log.Printf("[ERROR] can't delete user: %+v", err)
-		return nil
-	}
-
-	return nil
+	return users, nil
 }

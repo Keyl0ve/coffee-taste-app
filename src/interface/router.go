@@ -20,11 +20,19 @@ func (s *ServiceDriver) Server(ctx context.Context) {
 	r.Use(middleware.Logger)
 
 	r.Route("/api", func(r chi.Router) {
+		r.Route("/user", func(r chi.Router) {
+			r.Get("/get", func(w http.ResponseWriter, r *http.Request) {
+				s.UserGet(ctx, w, r)
+			})
+			r.Post("/create", func(w http.ResponseWriter, r *http.Request) {
+				s.UserCreate(ctx, w, r)
+			})
+		})
+
 		r.Route("/coffee", func(r chi.Router) {
 			r.Get("/get", func(w http.ResponseWriter, r *http.Request) {
 				s.CoffeeGet(ctx, w, r)
 			})
-
 			r.Get("/create", func(w http.ResponseWriter, r *http.Request) {
 				s.CoffeeCreate(ctx, w, r)
 			})

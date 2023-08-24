@@ -10,9 +10,8 @@ import (
 func InitService(conn *sql.DB) Service {
 	userRepo := infra.NewUserRepository(conn)
 	coffeeRepo := infra.NewCoffeeRepository(conn)
-	joinRepo := infra.NewJoinCoffeeToUserRepository(conn)
 
-	usecaseInterface := usecase.NewChatToolUsecase(userRepo, coffeeRepo, joinRepo)
+	usecaseInterface := usecase.NewChatToolUsecase(userRepo, coffeeRepo)
 	service := NewServiceDriver(usecaseInterface)
 	return service
 }
